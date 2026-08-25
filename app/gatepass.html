@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gate Pass Authorisation</title>
+  <script src="https://js.zohostatic.com/creator/widgets/version/2.0/widgetsdk-min.js"></script>
+  <link rel="stylesheet" href="css/gatepass.css">
+</head>
+
+<body>
+  <div class="toolbar">
+    <span class="status" id="loadStatus">Loading gate pass&hellip;</span>
+    <button class="print-btn" type="button" id="printBtn" disabled>Print gate pass</button>
+  </div>
+
+  <!-- Add &debug=1 to the page URL to list the fields the record actually returned. -->
+  <pre class="debug" id="debugBox" hidden></pre>
+
+  <main class="sheet">
+    <section class="form">
+
+      <header class="head">
+        <div class="head-left">
+          <h1 class="doc-title">GATE PASS AUTHORISATION FOR TAKING OUT MATERIALS</h1>
+          <div class="org">
+            <div class="org-text">
+              <p class="org-name">National Skill Development Corporation</p>
+              <p>5th &amp; 6th Floor, Kaushal Bhawan,</p>
+              <p>New Moti Bagh, New Delhi - 110023</p>
+              <p>T: +91-11-71600050&nbsp;&nbsp;F: +91-11-71600060</p>
+              <p>CIN: U85300DL2008NPL181612</p>
+            </div>
+            <div class="org-mark">
+              <!-- Swap this block for <img src="img/nsdc-logo.png" alt="NSDC"> -->
+              <svg class="mark-glyph" viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M24 2 27.6 17.5 41 9.2 32.8 22.6 48 26.2 32.8 29.8 41 43.2 27.6 34.9 24 50 20.4 34.9 7 43.2 15.2 29.8 0 26.2 15.2 22.6 7 9.2 20.4 17.5Z" />
+              </svg>
+              <p class="mark-name">N&middot;S&middot;D&middot;C</p>
+              <p class="mark-tag">WE IMAGINE FUTURE</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="head-right">
+          <span class="sr-label">SR. No.</span>
+          <span class="fill sr-value" id="srNo"></span>
+        </div>
+      </header>
+
+      <p class="lead">Please allow to dispatch the following materials</p>
+
+      <div class="fields">
+        <p class="field">
+          <span class="label">Company M/S</span>
+          <span class="fill" id="companyName"></span>
+        </p>
+        <p class="field">
+          <span class="label">Name of Person Mr.</span>
+          <span class="fill" id="personName"></span>
+        </p>
+        <p class="field field-row">
+          <span class="label">Date:</span>
+          <span class="fill" id="issueDate"></span>
+          <span class="label">Time:</span>
+          <span class="fill" id="issueTime"></span>
+          <span class="label">Return Date:</span>
+          <span class="fill" id="returnDate"></span>
+        </p>
+      </div>
+
+      <table class="items">
+        <thead>
+          <tr>
+            <th class="c-sr">SR. No.</th>
+            <th class="c-desc">Description of Items</th>
+            <th class="c-unit">Unit</th>
+            <th class="c-qty">Qty</th>
+            <th class="c-serial" id="serialHead" hidden>Serial No.</th>
+            <th class="c-rem">Remarks</th>
+          </tr>
+        </thead>
+        <tbody id="itemRows">
+          <tr>
+            <td class="c-sr"></td>
+            <td class="c-desc"></td>
+            <td class="c-unit"></td>
+            <td class="c-qty"></td>
+            <td class="c-rem" colspan="2"></td>
+          </tr>
+          <tr>
+            <td class="c-sr"></td>
+            <td class="c-desc"></td>
+            <td class="c-unit"></td>
+            <td class="c-qty"></td>
+            <td class="c-rem" colspan="2"></td>
+          </tr>
+          <tr>
+            <td class="c-sr"></td>
+            <td class="c-desc"></td>
+            <td class="c-unit"></td>
+            <td class="c-qty"></td>
+            <td class="c-rem" colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="footer">
+        <table class="status">
+          <thead>
+            <tr>
+              <th class="c-status">Status</th>
+              <th class="c-mark">Yes</th>
+              <th class="c-mark">No</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="Returnable">
+              <td>Returnable</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr data-status="Non - Returnable">
+              <td>Non - Returnable</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr data-status="Service">
+              <td>Service</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr data-status="Repairing">
+              <td>Repairing</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr data-status="Personal Belonging">
+              <td>Personal Belonging</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="signatures">
+          <p class="sign">
+            <span class="label">Authorised Signatory</span>
+            <span class="fill"></span>
+          </p>
+          <p class="sign">
+            <span class="label">Security Sign</span>
+            <span class="fill"></span>
+          </p>
+          <p class="sign">
+            <span class="label">Receiver Sign</span>
+            <span class="fill"></span>
+          </p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="gatepass.js"></script>
+</body>
+
+</html>

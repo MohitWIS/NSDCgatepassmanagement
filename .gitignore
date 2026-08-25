@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# zet build output
+dist/
+ZET-debug.log
+
+# Local HTTPS certificate for the zet dev server.
+# key.pem is a private key — regenerate locally rather than committing it.
+cert.pem
+key.pem
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

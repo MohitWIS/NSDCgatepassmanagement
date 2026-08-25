@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gate Pass Request</title>
+  <script src="https://js.zohostatic.com/creator/widgets/version/2.0/widgetsdk-min.js"></script>
+  <link rel="stylesheet" href="css/widget.css">
+</head>
+
+<body>
+  <main class="page">
+    <div class="state" id="state">
+      <span class="spinner" id="spinner"></span>
+      <p class="state-text" id="stateText">Loading request&hellip;</p>
+    </div>
+
+    <article class="card" id="card" hidden>
+      <header class="card-head">
+        <div class="head-main">
+          <p class="eyebrow" id="eyebrow">Gate Pass Request</p>
+          <h1 class="title" id="requestId">&mdash;</h1>
+        </div>
+        <span class="pill" id="statusPill">
+          <i class="dot" id="statusDot"></i>
+          <span id="statusText">&mdash;</span>
+        </span>
+      </header>
+
+      <dl class="meta" id="meta"></dl>
+
+      <section class="items">
+        <div class="items-head">
+          <h2 class="items-title" id="itemsTitle">Items</h2>
+          <span class="count" id="itemsCount" hidden></span>
+          <span class="cat-tags" id="itemCats"></span>
+        </div>
+        <div class="table-wrap" id="tableWrap">
+          <table class="items-table" id="itemsTable">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="empty" id="itemsEmpty" hidden>No items in this request.</p>
+      </section>
+
+      <p class="note" id="note" hidden></p>
+      <p class="msg" id="msg" hidden></p>
+
+      <section class="decision" id="decision" hidden>
+        <label class="decision-label" for="remarks" id="remarksLabel">Remarks</label>
+        <textarea class="remarks" id="remarks" rows="3"></textarea>
+        <p class="decision-error" id="remarksError" hidden>Please enter a reason for rejection.</p>
+        <div class="decision-actions">
+          <button class="btn btn-ghost" id="cancelBtn" type="button">Cancel</button>
+          <button class="btn" id="confirmBtn" type="button">Confirm</button>
+        </div>
+      </section>
+
+      <footer class="actions" id="actions" hidden>
+        <button class="btn btn-reject" id="rejectBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+          Reject
+        </button>
+        <button class="btn btn-approve" id="approveBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m5 13 4 4L19 7" />
+          </svg>
+          Approve
+        </button>
+      </footer>
+    </article>
+  </main>
+
+  <script src="widget.js"></script>
+</body>
+
+</html>
