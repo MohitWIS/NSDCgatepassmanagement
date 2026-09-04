@@ -1,0 +1,1265 @@
+/* Chrome is expressive; data marks stay disciplined. Series colours are the
+   validated set (blue↔orange: CVD ΔE 24.7, normal 33.6, all gates pass on white).
+   Status colours are reserved for state and always ship with a label.
+   Committed to light only: this renders inside Creator, which is always light. */
+:root {
+  --page: #f2f4fa;
+  --surface: #ffffff;
+  --ink: #101322;
+  --ink-2: #4b5169;
+  --muted: #8a90a6;
+  --grid: #e8eaf2;
+  --axis: #c8ccda;
+  --hair: rgba(16, 19, 34, .08);
+
+  --brand: #cc6e11;          /* the app's theme colour */
+  --brand-deep: #9c5209;
+  --brand-2: #e08a24;
+  --brand-3: #f0a83f;
+
+  --series-1: #2a78d6;
+  --series-2: #1baf7a;       /* aqua, not orange — see the note above */
+  --series-1-wash: rgba(42, 120, 214, .10);
+
+  --good: #0ca30c;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+
+  --radius: 18px;
+  --radius-sm: 11px;
+  --shadow: 0 1px 2px rgba(16, 19, 34, .04), 0 12px 32px -16px rgba(16, 19, 34, .28);
+  --shadow-lift: 0 2px 6px rgba(16, 19, 34, .06), 0 20px 44px -18px rgba(16, 19, 34, .34);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 0 0 44px;
+  background:
+    radial-gradient(1200px 520px at 12% -180px, rgba(204, 110, 17, .16), transparent 68%),
+    radial-gradient(900px 420px at 88% -140px, rgba(240, 168, 63, .14), transparent 66%),
+    var(--page);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+svg.icon,
+.btn svg,
+.toggle svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ================= hero header ================= */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 22px 0 18px;
+  padding: 24px 28px;
+  border-radius: var(--radius);
+  background: linear-gradient(118deg, var(--brand-deep) 0%, var(--brand) 52%, var(--brand-3) 130%);
+  color: #fff;
+  box-shadow: 0 16px 40px -20px rgba(204, 110, 17, .8);
+}
+
+.title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 750;
+  letter-spacing: -.025em;
+}
+
+.sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, .82);
+}
+
+.head-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .14s ease, background-color .16s ease, box-shadow .16s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* header buttons sit on the gradient */
+.head .btn-ghost {
+  background: rgba(255, 255, 255, .16);
+  border-color: rgba(255, 255, 255, .3);
+  color: #fff;
+}
+
+.head .btn-ghost:hover {
+  background: rgba(255, 255, 255, .26);
+}
+
+.head .btn-primary {
+  background: #fff;
+  color: var(--brand);
+  box-shadow: 0 6px 18px -6px rgba(0, 0, 0, .35);
+}
+
+.head .btn-primary:hover {
+  background: #fff6ea;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #23283d;
+}
+
+.btn-ghost {
+  background: var(--surface);
+  border-color: var(--hair);
+  color: var(--ink);
+}
+
+.btn-ghost:hover {
+  background: #f4f5fa;
+}
+
+/* The reset control has to be findable at a glance — an outlined button that
+   turns red and carries a count once anything is actually filtered. */
+.btn-clear {
+  align-self: end;
+  background: #fff;
+  border-color: var(--hair);
+  color: var(--ink-2);
+  box-shadow: var(--shadow);
+}
+
+.btn-clear svg {
+  width: 15px;
+  height: 15px;
+  color: var(--muted);
+}
+
+.btn-clear:hover {
+  border-color: var(--critical);
+  color: var(--critical);
+}
+
+.btn-clear:hover svg {
+  color: var(--critical);
+}
+
+.btn-clear.is-active {
+  border-color: rgba(208, 59, 59, .45);
+  background: rgba(208, 59, 59, .07);
+  color: #a52c2c;
+}
+
+.btn-clear.is-active svg {
+  color: var(--critical);
+}
+
+.btn-clear.is-active:hover {
+  background: rgba(208, 59, 59, .13);
+}
+
+.count-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--critical);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-quiet {
+  align-self: end;
+  background: transparent;
+  color: var(--ink-2);
+  padding: 10px 14px;
+}
+
+.btn-quiet:hover {
+  background: #eceef6;
+  transform: none;
+}
+
+/* ================= filters ================= */
+
+.filters {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 15px 18px;
+  margin-bottom: 18px;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 150px;
+}
+
+.field.grow {
+  flex: 1;
+  min-width: 200px;
+}
+
+.field label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field select,
+.field input,
+.rows-label select {
+  appearance: none;
+  padding: 10px 34px 10px 13px;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-sm);
+  background-color: #f8f9fd;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a90a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-size: 15px;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.field input {
+  background-image: none;
+  padding-right: 13px;
+  cursor: text;
+}
+
+.field select:hover,
+.field input:hover {
+  background-color: #faf6f1;
+}
+
+.field select:focus,
+.field input:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(204, 110, 17, .18);
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, #fff6e5, #fffaf0);
+  border: 1px solid #f6e0b5;
+  color: #8a5a10;
+  font-size: 13px;
+  font-weight: 550;
+}
+
+/* ================= KPI tiles ================= */
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.kpi {
+  position: relative;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+
+/* a wash of the tile's own accent, set inline per tile */
+.kpi::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--accent, var(--brand));
+}
+
+.kpi::after {
+  content: "";
+  position: absolute;
+  right: -34px;
+  top: -34px;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: var(--accent, var(--brand));
+  opacity: .07;
+}
+
+.kpi-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.kpi-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 11px;
+  background: var(--accent-soft, rgba(204, 110, 17, .13));
+  color: var(--accent, var(--brand));
+}
+
+.kpi-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kpi-label {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.kpi-value {
+  position: relative;
+  margin: 0;
+  font-size: 32px;
+  font-weight: 750;
+  letter-spacing: -.035em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+}
+
+.kpi-note {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 7px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.kpi-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.kpi-dot.is-good {
+  background: var(--good);
+  box-shadow: 0 0 0 3px rgba(12, 163, 12, .16);
+}
+
+.kpi-dot.is-warning {
+  background: var(--warning);
+  box-shadow: 0 0 0 3px rgba(250, 178, 25, .2);
+}
+
+.kpi-dot.is-critical {
+  background: var(--critical);
+  box-shadow: 0 0 0 3px rgba(208, 59, 59, .18);
+}
+
+/* ================= chart cards ================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+.card.wide {
+  grid-column: span 2;
+  background:
+    radial-gradient(620px 260px at 100% 0, rgba(204, 110, 17, .08), transparent 70%),
+    var(--surface);
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -.015em;
+}
+
+.card-sub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.toggle {
+  flex: none;
+  padding: 6px 13px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: #f6f7fc;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+.toggle:hover {
+  background: #f7efe4;
+  color: var(--brand);
+}
+
+.toggle[aria-pressed="true"] {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.plot {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.plot svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+/* chart primitives — recessive by design */
+
+.grid-line {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.axis-line {
+  stroke: var(--axis);
+  stroke-width: 1;
+}
+
+.tick {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.tick-y {
+  text-anchor: end;
+}
+
+.bar-label {
+  fill: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cat-label {
+  fill: var(--ink-2);
+  font-size: 12.5px;
+}
+
+.hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+.hit:hover ~ .mark,
+.mark {
+  transition: opacity .14s ease;
+}
+
+.crosshair {
+  stroke: var(--brand);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: .55;
+}
+
+/* legend */
+
+.legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.legend-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 4px;
+}
+
+/* per-chart table view */
+
+.mini {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mini th,
+.mini td {
+  padding: 8px 11px;
+  border-bottom: 1px solid var(--grid);
+  font-size: 12.5px;
+  text-align: left;
+}
+
+.mini th {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mini td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.mini tr:last-child td {
+  border-bottom: 0;
+}
+
+.no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  padding: 20px;
+  border: 1px dashed var(--grid);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ================= requests table ================= */
+
+.table-card {
+  padding-bottom: 8px;
+}
+
+.rows-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.rows-label select {
+  padding: 7px 30px 7px 11px;
+  font-size: 12.5px;
+}
+
+.table-scroll {
+  overflow: auto;
+  max-height: 470px;
+  border: 1px solid var(--grid);
+  border-radius: var(--radius-sm);
+}
+
+.data {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.data th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 11px 15px;
+  background: #f6f7fc;
+  border-bottom: 1px solid var(--grid);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+}
+
+.data td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--grid);
+}
+
+.data tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.data tbody tr:hover td {
+  background: #fdf8f2;
+}
+
+.data td.mono {
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+/* Reasons are free text and can run long — cap the column and keep the full
+   text on hover rather than letting one row stretch the table. */
+.data td.reason {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink-2);
+}
+
+.data td.reason.is-na {
+  color: #c3c6d4;
+}
+
+.data td.reason.is-missing {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.data td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+/* Status is state, not a series: reserved palette, always dot + label. */
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 11px 4px 9px;
+  border-radius: 999px;
+  background: #f1f2f8;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.state::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.state.is-good {
+  background: rgba(12, 163, 12, .1);
+  color: #0a7d0a;
+}
+
+.state.is-good::before {
+  background: var(--good);
+}
+
+.state.is-warning {
+  background: rgba(250, 178, 25, .15);
+  color: #8a5a10;
+}
+
+.state.is-warning::before {
+  background: var(--warning);
+}
+
+.state.is-critical {
+  background: rgba(208, 59, 59, .1);
+  color: #a52c2c;
+}
+
+.state.is-critical::before {
+  background: var(--critical);
+}
+
+.state.is-serious {
+  background: rgba(236, 131, 90, .14);
+  color: #a4522c;
+}
+
+.state.is-serious::before {
+  background: var(--serious);
+}
+
+.empty {
+  margin: 16px 0;
+  padding: 40px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ================= tooltip ================= */
+
+.tip {
+  position: fixed;
+  z-index: 90;
+  min-width: 140px;
+  padding: 10px 13px;
+  border-radius: 11px;
+  background: rgba(16, 19, 34, .95);
+  color: #fff;
+  font-size: 12.5px;
+  line-height: 1.5;
+  pointer-events: none;
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, .6);
+}
+
+.tip-title {
+  font-weight: 750;
+  margin-bottom: 4px;
+}
+
+.tip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, .78);
+}
+
+.tip-row .legend-swatch {
+  width: 8px;
+  height: 8px;
+}
+
+.tip-val {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+  color: #fff;
+}
+
+/* ================= date range picker ================= */
+
+.range-field {
+  position: relative;
+}
+
+.range-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 218px;
+  padding: 10px 13px;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-sm);
+  background: #f8f9fd;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.range-btn:hover {
+  background: #f2f4fb;
+}
+
+.range-btn[aria-expanded="true"] {
+  background: #fff;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(204, 110, 17, .18);
+}
+
+.range-btn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--brand);
+}
+
+.range-btn .caret {
+  margin-left: auto;
+  color: var(--muted);
+}
+
+.range-btn span {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.range-pop {
+  position: absolute;
+  /* Opens beside the Period field rather than under it, so the filter row and
+     the KPIs behind it stay readable while a range is being chosen. Sitting a
+     little above the field keeps the whole panel clear of the KPI row below. */
+  top: -40px;
+  left: calc(100% + 12px);
+  z-index: 60;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 24px 56px -16px rgba(16, 19, 34, .42);
+  overflow: hidden;
+}
+
+.range-body {
+  display: flex;
+}
+
+.presets {
+  width: 182px;
+  margin: 0;
+  padding: 10px;
+  list-style: none;
+  background: #fafbff;
+  border-right: 1px solid var(--grid);
+}
+
+.preset {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.preset:hover {
+  background: #f7efe4;
+  color: var(--ink);
+}
+
+.preset.is-on {
+  background: rgba(204, 110, 17, .12);
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.preset .check {
+  width: 16px;
+  flex: none;
+  font-weight: 800;
+  color: var(--brand);
+  visibility: hidden;
+}
+
+.preset.is-on .check {
+  visibility: visible;
+}
+
+.cal {
+  padding: 14px 16px 12px;
+}
+
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cal-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cal-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--hair);
+  border-radius: 9px;
+  background: #f8f9fd;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.cal-nav:hover {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.cal-nav svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cal-months {
+  display: flex;
+  gap: 24px;
+}
+
+.month {
+  width: 228px;
+}
+
+.month-name {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+.dow,
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.dow span {
+  padding: 3px 0;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-align: center;
+  color: var(--muted);
+}
+
+.day {
+  position: relative;
+  height: 31px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color .12s ease;
+}
+
+.day.blank {
+  visibility: hidden;
+  cursor: default;
+}
+
+/* Each day carries the state of the requests raised on it, using the reserved
+   status palette. Colour never stands alone: the legend below names every state
+   and each cell's tooltip spells out the counts. */
+.day.is-pending {
+  background: rgba(208, 59, 59, .16);
+  color: #a52c2c;
+  font-weight: 700;
+}
+
+.day.is-rejected {
+  background: rgba(236, 131, 90, .2);
+  color: #a4522c;
+  font-weight: 650;
+}
+
+.day.is-done {
+  background: rgba(12, 163, 12, .14);
+  color: #0a7d0a;
+  font-weight: 650;
+}
+
+/* a saturated foot on the cell, so the state survives a washed-out screen */
+.day.is-pending::before,
+.day.is-rejected::before,
+.day.is-done::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 2px;
+}
+
+.day.is-pending::before { background: var(--critical); }
+.day.is-rejected::before { background: var(--serious); }
+.day.is-done::before { background: var(--good); }
+
+.day.in-range::before,
+.day.edge::before {
+  display: none;
+}
+
+.day:hover:not(.blank) {
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+}
+
+.day.in-range {
+  background: rgba(204, 110, 17, .16);
+  border-radius: 0;
+  color: var(--ink);
+}
+
+.day.edge {
+  background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+  color: #fff;
+  font-weight: 750;
+}
+
+.day.edge.start {
+  border-radius: 8px 0 0 8px;
+}
+
+.day.edge.end {
+  border-radius: 0 8px 8px 0;
+}
+
+.day.edge.start.end {
+  border-radius: 8px;
+}
+
+.day.today::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--series-2);
+}
+
+.day.edge.today::after {
+  background: #fff;
+}
+
+.cal-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+
+.cal-legend .key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cal-legend i {
+  width: 11px;
+  height: 11px;
+  border-radius: 4px;
+}
+
+.cal-legend .k-pending { background: var(--critical); }
+.cal-legend .k-rejected { background: var(--serious); }
+.cal-legend .k-done { background: var(--good); }
+
+.range-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--grid);
+  background: #fafbff;
+}
+
+.range-sum {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.range-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.range-actions .btn {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.range-actions .btn-primary {
+  background: linear-gradient(120deg, var(--brand-deep), var(--brand));
+}
+
+/* ================= responsive ================= */
+
+@media (max-width: 900px) {
+  .wrap {
+    padding: 0 14px;
+  }
+
+  .head {
+    padding: 20px;
+  }
+
+  .card.wide {
+    grid-column: span 1;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Not enough room to the right — fall back to opening underneath. */
+@media (max-width: 1180px) {
+  .range-pop {
+    top: calc(100% + 10px);
+    left: 0;
+  }
+}
+
+@media (max-width: 820px) {
+  .range-body {
+    flex-direction: column;
+  }
+
+  .presets {
+    width: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--grid);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cal-months {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .month {
+    width: 100%;
+  }
+}

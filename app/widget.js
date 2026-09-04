@@ -59,7 +59,7 @@ var GATE_PASS_PAD = 4;
 // null means "the level's own report". If that report is filtered such that
 // already-generated requests drop out of it, the scan will not see their numbers
 // and numbering restarts at 0001 — point this at an unfiltered report instead.
-var NUMBER_SCAN_REPORT = null;
+var NUMBER_SCAN_REPORT = "All_Gate_Pass_Requests";
 
 // Fields on the L1/L2 process record.
 var PROCESS_FIELDS = {
@@ -161,7 +161,7 @@ function start() {
         // L1_User / L2_User are stamped with the logged-in user, as zoho.loginuser does.
         return ZOHO.CREATOR.UTIL.getInitParams().then(function (init) {
             console.log("GPMS initParams:", init);
-            loginUser = init && (init.loginUser || init.loginUserEmail);
+            loginUser = resolveLoginUser(init);
         }).catch(function (err) {
             console.warn("getInitParams failed, the user field will be skipped:", err);
         }).then(loadRecord);
@@ -169,6 +169,37 @@ function start() {
         console.error("getQueryParams failed:", err);
         showState("Could not read the page parameters.", true);
     });
+}
+
+/**
+ * The login name written to L1_User / L2_User, and printed on the gate pass as
+ * Dept. Head / Admin Head. getInitParams names this differently across SDK
+ * builds, so take the first key that holds a value and log which one it was.
+ */
+// Name-style keys first: getInitParams.loginUser is the email address, while the
+// request's own User field shows the account's login name. Preferring the name
+// keeps Dept. Head / Admin Head consistent with Submitted By on the gate pass.
+function LOGIN_KEYS() {
+    return ["loginUserName", "loginName", "userName", "user_name", "displayName",
+        "loginUser", "login_user", "loginUserEmail", "userEmail", "email"];
+}
+
+function resolveLoginUser(init) {
+    if (!init) {
+        console.warn("no initParams; L1_User / L2_User will not be stamped.");
+        return null;
+    }
+    var keys = LOGIN_KEYS();
+    for (var i = 0; i < keys.length; i++) {
+        var value = display(init[keys[i]]);
+        if (value) {
+            console.log('login user "' + value + '" read from initParams.' + keys[i]);
+            return value;
+        }
+    }
+    console.warn("could not find a login name in initParams; L1_User / L2_User " +
+        "will be left unset. Keys present:", Object.keys(init));
+    return null;
 }
 
 /** Accepts "L2", "l2", or plain "2". */

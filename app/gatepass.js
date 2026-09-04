@@ -19,7 +19,13 @@ var FIELDS = {
     issueTime: ["Added_Time", "Gate_Pass_Time", "Issue_Time", "Time"],
     returnDate: ["Return_Date", "Expected_Return_Date", "Returnable_Date"],
     requestType: ["Request_Type", "Type"],
-    itemCategory: ["Item_Category", "Item_category", "ItemCategory"]
+    itemCategory: ["Item_Category", "Item_category", "ItemCategory"],
+
+    // Signature block: who raised it, and who approved it at each level.
+    // Receiver Sign is deliberately left blank to be signed by hand.
+    submittedBy: ["User", "Added_User", "Requested_By", "Submitted_By"],
+    deptHead: ["L1_User"],
+    adminHead: ["L2_User"]
 };
 
 // Subform row → printed column.
@@ -38,7 +44,8 @@ var debugMode = false;
 
 document.addEventListener("DOMContentLoaded", function () {
     ["loadStatus", "printBtn", "srNo", "companyName", "personName", "issueDate",
-        "issueTime", "returnDate", "itemRows", "serialHead", "debugBox"].forEach(function (id) {
+        "issueTime", "returnDate", "itemRows", "serialHead", "debugBox",
+        "submittedBy", "deptHead", "adminHead"].forEach(function (id) {
             el[id] = document.getElementById(id);
         });
 
@@ -141,6 +148,10 @@ function fill(data) {
     setText(el.issueDate, pickText(data, FIELDS.issueDate));
     setText(el.issueTime, timeOnly(pickText(data, FIELDS.issueTime)));
     setText(el.returnDate, pickText(data, FIELDS.returnDate));
+
+    setText(el.submittedBy, pickText(data, FIELDS.submittedBy));
+    setText(el.deptHead, pickText(data, FIELDS.deptHead));
+    setText(el.adminHead, pickText(data, FIELDS.adminHead));
 
     var requestType = pickText(data, FIELDS.requestType);
     fillItems(findItemsField(data, requestType), data, pickText(data, FIELDS.itemCategory));
