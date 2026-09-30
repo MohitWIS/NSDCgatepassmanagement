@@ -317,6 +317,21 @@ body {
   margin-bottom: 0;
 }
 
+/* Closing declaration. Sits under the signature block, inside the printed
+   frame, separated by a hairline so it reads as a footnote to the pass rather
+   than another field to fill in. */
+.sys-note {
+  margin: 6mm 0 0;
+  padding-top: 2.5mm;
+  border-top: 0.8px solid #000;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #000;
+}
+
 /* ---------- print ---------- */
 
 @media print {
