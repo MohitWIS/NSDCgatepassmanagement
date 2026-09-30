@@ -51,11 +51,11 @@ var STATUS_FIELD = "Request__Status";
 
 /* ---- gate pass numbering (L2 approve only) ---- */
 
-var GATE_PASS_PREFIX = "GP/OUT";
+var GATE_PASS_PREFIX = "NSDC-KB-GP";
 var GATE_PASS_STATUS = "Gate Pass Generate";
 var GATE_PASS_PAD = 4;
 
-// Report scanned for existing GP/OUT numbers, so the next one continues the run.
+// Report scanned for existing gate pass numbers, so the next one continues the run.
 // null means "the level's own report". If that report is filtered such that
 // already-generated requests drop out of it, the scan will not see their numbers
 // and numbering restarts at 0001 — point this at an unfiltered report instead.
@@ -676,8 +676,8 @@ function decisionValues(rejecting, remarks, gatePassNumber) {
 }
 
 /**
- * GP/OUT-0001, GP/OUT-0002, … Scans every existing number carrying the prefix
- * and takes the largest suffix, as the Deluge does.
+ * NSDC-KB-GP-0001, NSDC-KB-GP-0002, … Scans every existing number carrying the
+ * prefix and takes the largest counter, as the Deluge does.
  */
 function nextGatePassNumber() {
     return ZOHO.CREATOR.DATA.getRecords({
@@ -698,12 +698,8 @@ function nextGatePassNumber() {
         var greatest = 0;
 
         rows.forEach(function (row) {
-            var parts = display(row.Gate_Pass_Number).split("-");
-            if (parts.length !== 2) {
-                return;
-            }
-            var suffix = parseInt(parts[1], 10);
-            if (!isNaN(suffix) && suffix > greatest) {
+            var suffix = suffixOf(display(row.Gate_Pass_Number));
+            if (suffix > greatest) {
                 greatest = suffix;
             }
         });
@@ -735,6 +731,20 @@ function isNoRecords(err) {
         }
     }
     return /"?code"?\s*:?\s*(9280|3100)|no\s*records?\s*found/i.test(String(text));
+}
+
+/**
+ * The counter at the end of a gate pass number. The prefix itself contains
+ * dashes (NSDC-KB-GP-0007), so anchor on the prefix and read what follows
+ * rather than splitting the whole string — 0 for anything not in this series.
+ */
+function suffixOf(number) {
+    if (number.indexOf(GATE_PASS_PREFIX) !== 0) {
+        return 0;
+    }
+    var tail = number.slice(GATE_PASS_PREFIX.length).replace(/^[-\/\s]+/, "");
+    var value = parseInt(tail, 10);
+    return isNaN(value) ? 0 : value;
 }
 
 function padNumber(value) {

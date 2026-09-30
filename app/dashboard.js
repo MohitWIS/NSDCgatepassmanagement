@@ -1227,7 +1227,7 @@ function demoRequests() {
             date: when,
             type: types[rnd() > 0.38 ? 0 : 1],
             status: status,
-            gatePass: status === "Gate Pass Generate" ? "GP/OUT-" + ("000" + (i + 1)).slice(-4) : "",
+            gatePass: status === "Gate Pass Generate" ? "NSDC-KB-GP-" + ("000" + (i + 1)).slice(-4) : "",
             category: category,
             items: items,
             qty: items.reduce(function (sum, item) { return sum + item.qty; }, 0)
