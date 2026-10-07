@@ -30,7 +30,7 @@ var FIELDS = {
 
 // Subform row → printed column.
 var ITEM_FIELDS = {
-    description: ["Item_Name", "Item_name", "ItemName", "Description"],
+    description: ["Item_Name1", "Item_Name", "Item_name", "ItemName", "Description"],
     unit: ["UoM", "UOM", "Uom", "Unit_of_Measure", "Unit"],
     qty: ["Quantity", "Qty"],
     remarks: ["Remarks"],
@@ -177,7 +177,7 @@ function fillItems(field, data, recordCategory) {
         var unique = isUniqueItem(row, recordCategory);
         addItemRow(withSerial, [
             String(index + 1),
-            pickText(row, ITEM_FIELDS.description),
+            pickTextLoose(row, ITEM_FIELDS.description, /name|product|descrip|title/i),
             pickText(row, ITEM_FIELDS.unit),
             pickText(row, ITEM_FIELDS.qty),
             unique ? pickText(row, ITEM_FIELDS.serial) : "",
@@ -357,6 +357,17 @@ function display(value) {
         }
 
         if (value.Name != null) return display(value.Name);
+
+        // A lookup that carries its own fields rather than a display value:
+        // take the first readable string that is not an internal id.
+        var keys = Object.keys(value).filter(function (key) {
+            return !/^id$/i.test(key) && !/^zc_/.test(key) &&
+                typeof value[key] === "string" && value[key];
+        });
+        if (keys.length) {
+            return value[keys[0]];
+        }
+
         console.warn("field value not recognised, printing blank:", value);
         return "";
     }

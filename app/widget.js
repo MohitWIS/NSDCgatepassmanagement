@@ -102,12 +102,31 @@ var KIND_BATCH = "batch";
 // none of its candidate link names exist on the rows. `only` marks a column as
 // belonging to one item category — it is dropped when no row is of that kind.
 var COLUMNS = [
-    { label: "Item Name", cls: "col-name", keys: ["Item_Name", "Item_name", "ItemName"] },
-    { label: "Item ID", cls: "col-code", keys: ["Item_ID", "Item_Id", "ItemID"] },
-    { label: "UoM", cls: "col-uom", keys: ["UoM", "UOM", "Uom", "Unit_of_Measure"] },
-    { label: "Serial No.", cls: "col-code", keys: ["Serial_No", "Serial_Number", "Serial_no", "SerialNo"], only: KIND_UNIQUE },
-    { label: "Quantity", cls: "col-num", keys: ["Quantity", "Qty"] }
+    {
+        label: "Item Name", cls: "col-name",
+        keys: ["Item_Name1", "Item_Name", "Item_name", "ItemName"],
+        pattern: /name|product|descrip|title/i
+    },
+    {
+        label: "UoM", cls: "col-uom",
+        keys: ["UoM", "UOM", "Uom", "Unit_of_Measure"],
+        pattern: /uom|unit/i
+    },
+    {
+        label: "Serial No.", cls: "col-code",
+        keys: ["Serial_No", "Serial_Number", "Serial_no", "SerialNo"],
+        pattern: /serial/i, only: KIND_UNIQUE
+    },
+    {
+        label: "Quantity", cls: "col-num",
+        keys: ["Quantity", "Qty"],
+        pattern: /qty|quantity/i
+    }
 ];
+
+// Never let a column latch onto one of these by pattern — "Item_Category"
+// contains "item", and a serial column must not answer the name column.
+var COLUMN_EXCLUDE = /category|serial|uom|unit|qty|quantity|^id$|_id$|remark/i;
 
 var el = {};
 var level = LEVELS[DEFAULT_LEVEL];
@@ -486,21 +505,70 @@ function kindOf(row, fallback) {
  * request shows no Serial No. column at all, and vice versa.
  */
 function columnsFor(rows, kinds) {
-    return COLUMNS.map(function (col) {
+    var taken = {};
+
+    var resolved = COLUMNS.map(function (col) {
         if (col.only && kinds.length && kinds.indexOf(col.only) === -1) {
             return null;
         }
-        for (var i = 0; i < col.keys.length; i++) {
-            var key = col.keys[i];
-            var found = rows.some(function (row) {
-                return Object.prototype.hasOwnProperty.call(row, key);
-            });
-            if (found) {
-                return { key: key, label: col.label, cls: col.cls, only: col.only };
-            }
+        var key = resolveColumn(rows, col, taken);
+        if (!key) {
+            return null;
         }
-        return null;
+        taken[key] = true;
+        return { key: key, label: col.label, cls: col.cls, only: col.only };
     }).filter(Boolean);
+
+    console.log("item columns resolved to:", resolved.map(function (c) {
+        return c.label + " → " + c.key;
+    }).join(", ") || "(none)", "| available:", Object.keys(rows[0] || {}).join(", "));
+
+    return resolved;
+}
+
+/**
+ * A named field that actually holds a value wins. Failing that, any unclaimed
+ * field whose link name matches the column's pattern — subform columns get
+ * renamed often, and a renamed field should not blank the table. Only if
+ * nothing holds data do we fall back to a name that merely exists.
+ */
+function resolveColumn(rows, col, taken) {
+    var withValue = col.keys.filter(function (key) {
+        return rows.some(function (row) { return display(row[key]) !== ""; });
+    });
+    if (withValue.length) {
+        return withValue[0];
+    }
+
+    if (col.pattern) {
+        var guess = allKeys(rows).filter(function (key) {
+            return !taken[key] && col.pattern.test(key) && !COLUMN_EXCLUDE.test(key) &&
+                rows.some(function (row) { return display(row[key]) !== ""; });
+        })[0];
+        if (guess) {
+            console.log('"' + col.label + '" matched "' + guess + '" by pattern — add it to COLUMNS.');
+            return guess;
+        }
+    }
+
+    var present = col.keys.filter(function (key) {
+        return rows.some(function (row) {
+            return Object.prototype.hasOwnProperty.call(row, key);
+        });
+    });
+    return present[0] || null;
+}
+
+function allKeys(rows) {
+    var seen = {};
+    rows.forEach(function (row) {
+        Object.keys(row).forEach(function (key) {
+            if (!Array.isArray(row[key])) {
+                seen[key] = true;
+            }
+        });
+    });
+    return Object.keys(seen);
 }
 
 /**
@@ -844,6 +912,16 @@ function display(value) {
         }
 
         if (value.Name != null) return display(value.Name);
+
+        // A lookup that carries its own fields rather than a display value:
+        // take the first readable string that is not an internal id.
+        var keys = Object.keys(value).filter(function (key) {
+            return !/^id$/i.test(key) && !/^zc_/.test(key) && typeof value[key] === "string" && value[key];
+        });
+        if (keys.length) {
+            return value[keys[0]];
+        }
+
         console.warn("field value not recognised, printing blank:", value);
         return "";
     }
